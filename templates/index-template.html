@@ -148,16 +148,19 @@
     <script>
       function generate_feed() {
         const keywords = document.getElementById("keywords").value;
+        if (keywords.trim() == "") {
+          let output = document.getElementById("output");
+          output.innerText = "Please provide at least one keyword.";
+          return;
+        }
+
+        // Trim the whitespace
         let keywordArray = keywords.split(",");
         for (let i = 0; i < keywordArray.length; i++) {
           keywordArray[i] = keywordArray[i].trim();
         }
 
-        if (keywordArray.length == 0) {
-          let output = document.getElementById("output");
-          output.innerText = "Please provide at least one keyword.";
-        }
-
+        // Add keywords as url params
         const baseUrl = "https://eprint.fans/feed/";
         let getParams = "";
         for (let i = 0; i < keywordArray.length; i++) {
