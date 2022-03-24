@@ -70,6 +70,8 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	keywords := query["keyword"]
 
+	showAllItems := (query.Get("show_all_items") == "true")
+
 	customfeed := &feeds.Feed{
 		Title:       "custom eprint feed with keywords: \"" + strings.Join(keywords, "\", \"") + "\"",
 		Link:        &feeds.Link{Href: "https://eprint.fans" + r.URL.String()},
@@ -81,34 +83,46 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 	customfeed.Items = []*feeds.Item{}
 
 	for _, item := range eprintFeed.feed.Items {
-		relevant := false
-		triggeringKeyword := ""
-		for _, keyword := range keywords {
-			if strings.Contains(
-				strings.ToLower(item.Title),
-				strings.ToLower(keyword),
-			) ||
-				strings.Contains(
-					strings.ToLower(item.Description),
+		if showAllItems {
+			customfeed.Items = append(
+				customfeed.Items,
+				&feeds.Item{
+					Title:       item.Title,
+					Link:        item.Link,
+					Description: item.Description,
+					Id:          item.Id,
+				},
+			)
+		} else {
+			relevant := false
+			triggeringKeyword := ""
+			for _, keyword := range keywords {
+				if strings.Contains(
+					strings.ToLower(item.Title),
 					strings.ToLower(keyword),
-				) {
-				relevant = true
-				triggeringKeyword = keyword
+				) ||
+					strings.Contains(
+						strings.ToLower(item.Description),
+						strings.ToLower(keyword),
+					) {
+					relevant = true
+					triggeringKeyword = keyword
+				}
 			}
-		}
-		if !relevant {
-			continue
-		}
+			if !relevant {
+				continue
+			}
 
-		customfeed.Items = append(
-			customfeed.Items,
-			&feeds.Item{
-				Title:       item.Title,
-				Link:        item.Link,
-				Description: fmt.Sprintf("[[Triggering Keyword: \"%s\"]] ", triggeringKeyword) + item.Description,
-				Id:          item.Id,
-			},
-		)
+			customfeed.Items = append(
+				customfeed.Items,
+				&feeds.Item{
+					Title:       item.Title,
+					Link:        item.Link,
+					Description: fmt.Sprintf("[[Triggering Keyword: \"%s\"]] ", triggeringKeyword) + item.Description,
+					Id:          item.Id,
+				},
+			)
+		}
 	}
 	rss, err := customfeed.ToRss()
 	if err != nil {
