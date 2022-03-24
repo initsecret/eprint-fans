@@ -72,10 +72,15 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 
 	showAllItems := (query.Get("show_all_items") == "true")
 
+	title := "custom eprint feed with keywords: \"" + strings.Join(keywords, "\", \"") + "\""
+	if showAllItems {
+		title = "full eprint feed"
+	}
+
 	customfeed := &feeds.Feed{
-		Title:       "custom eprint feed with keywords: \"" + strings.Join(keywords, "\", \"") + "\"",
+		Title:       title,
 		Link:        &feeds.Link{Href: "https://eprint.fans" + r.URL.String()},
-		Description: "generated using eprint.fans",
+		Description: "generated using eprint.fans from https://eprint.iacr.org/rss/rss.xml",
 		Created:     eprintFeed.feed.Updated,
 		Updated:     eprintFeed.feed.Updated,
 	}
