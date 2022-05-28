@@ -36,7 +36,6 @@ func getFeed() (*feeds.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(feed.Title)
 
 	return gofeedToGorillaFeed(feed)
 }
@@ -77,8 +76,7 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 	customfeed := &feeds.Feed{
 		Title:       title,
 		Link:        &feeds.Link{Href: "https://eprint.fans" + r.URL.String()},
-		Description: "generated using eprint.fans from https://eprint.iacr.org/rss/rss.xml",
-		Created:     eprintFeed.feed.Updated,
+		Description: "generated using eprint.fans from https://eprint.iacr.org/rss/atom.xml",
 		Updated:     eprintFeed.feed.Updated,
 	}
 
