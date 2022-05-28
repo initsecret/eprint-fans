@@ -4,7 +4,6 @@ import (
 	"embed"
 	"fmt"
 	"html/template"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +13,7 @@ import (
 	"time"
 
 	"github.com/gorilla/feeds"
+	"github.com/mmcdole/gofeed"
 )
 
 //go:embed templates/*
@@ -28,20 +28,17 @@ type Feed struct {
 
 var eprintFeed Feed
 
-const EPRINT_FEED_URL = "http://eprint.iacr.org/rss/rss.xml"
+const EPRINT_FEED_URL = "https://eprint.iacr.org/rss/atom.xml"
 
 func getFeed() (*feeds.Feed, error) {
-	resp, err := http.Get(EPRINT_FEED_URL)
+	fp := gofeed.NewParser()
+	feed, err := fp.ParseURL(EPRINT_FEED_URL)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+	fmt.Println(feed.Title)
 
-	return parseEprintFeed(body)
+	return gofeedToGorillaFeed(feed)
 }
 
 func updateFeed() {
@@ -94,8 +91,11 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 				&feeds.Item{
 					Title:       item.Title,
 					Link:        item.Link,
+					Author:      item.Author,
 					Description: item.Description,
 					Id:          item.Id,
+					Updated:     item.Updated,
+					Created:     item.Created,
 				},
 			)
 		} else {
@@ -108,6 +108,10 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 				) ||
 					strings.Contains(
 						strings.ToLower(item.Description),
+						strings.ToLower(keyword),
+					) ||
+					strings.Contains(
+						strings.ToLower(item.Author.Name),
 						strings.ToLower(keyword),
 					) {
 					relevant = true
@@ -123,17 +127,20 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
 				&feeds.Item{
 					Title:       item.Title,
 					Link:        item.Link,
+					Author:      item.Author,
 					Description: fmt.Sprintf("[[Triggering Keyword: \"%s\"]] ", triggeringKeyword) + item.Description,
 					Id:          item.Id,
+					Updated:     item.Updated,
+					Created:     item.Created,
 				},
 			)
 		}
 	}
-	rss, err := customfeed.ToRss()
+	atom, err := customfeed.ToAtom()
 	if err != nil {
 		fmt.Fprintf(w, "failed to generate feed with error: %s", err)
 	}
-	fmt.Fprint(w, rss)
+	fmt.Fprint(w, atom)
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
