@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/gorilla/feeds"
 	"github.com/mmcdole/gofeed"
 )
@@ -8,8 +10,9 @@ import (
 // Convert a gofeed.Feed into a gorilla/feeds.Feed
 func gofeedToGorillaFeed(goFeed *gofeed.Feed) (*feeds.Feed, error) {
 	feed := &feeds.Feed{}
-	feed.Updated = *goFeed.UpdatedParsed
 	feed.Items = []*feeds.Item{}
+
+	feed.Updated = time.Now()
 
 	for _, item := range goFeed.Items {
 
