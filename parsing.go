@@ -20,11 +20,8 @@ func gofeedToGorillaFeed(goFeed *gofeed.Feed) (*feeds.Feed, error) {
 		n := len(item.Authors)
 		for i, author := range item.Authors {
 			itemAuthors += author.Name
-			if i <= (n - 3) {
+			if i <= (n - 2) {
 				itemAuthors += ", "
-			}
-			if i == (n - 2) {
-				itemAuthors += ", and "
 			}
 		}
 
