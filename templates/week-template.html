@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  <link rel="stylesheet" href="https://snkth.com/3rdparty/katex/katex.min.css"
+    integrity="sha384-Um5gpz1odJg5Z4HAmzPtgZKdTBHZdw8S29IecapCSB31ligYPhHQZMIlWLYQGVoc" crossorigin="anonymous" />
+  <script type="module">
+    import renderMathInElement from "https://snkth.com/3rdparty/katex/contrib/auto-render.mjs";
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: "$", right: "$", display: false },
+      ],
+      macros: {},
+      throwOnError: false,
+    });
+  </script>
+</head>
+
+<body>
+  <h1><code>eprints from week {{.week}} of {{.year}}</code></h1>
+
+  <div class="all-listings">
+    <div class="listings-number">
+      Found {{.number}} listings.
+    </div>
+    {{range .listings}}
+    <div class="listing">
+      <a href="{{.Link.Href}}" class="listing-title">{{.Title}}</a><br>
+      <span class="listing-authors">{{.Author.Name}}</span>
+      <p class="listing-abstract">{{.Description}}</p>
+    </div>
+    {{end}}
+  </div>
+
+  <footer>
+    <div>
+      <div>
+        {{ if .LastUpdated }} {{ if .ElapsedSinceLastUpdated }}
+        <strong>Feed Last Updated:</strong>
+        {{ .LastUpdated }} ({{ .ElapsedSinceLastUpdated }} minutes ago).
+        <br />
+        {{end}} {{end}}
+      </div>
+      Made with 💜 by <a href="https://snkth.com/">sanketh</a>.<br />
+      Using <a href="https://snkth.com/oss-licenses/">open source software</a>.<br />
+      Open source as
+      <a href="https://github.com/sgmenda/eprint-fans/">eprint-fans</a>.<br />
+      Provided
+      <a href="https://www.law.cornell.edu/ucc/2/2-316">"as is"</a> without
+      any warranties.
+    </div>
+  </footer>
+</body>
+
+</html>

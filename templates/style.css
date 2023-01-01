@@ -1,0 +1,88 @@
+body {
+  font-family: 'Roboto Mono', monospace;
+  line-height: 1.6;
+  max-width: 42rem;
+  margin: auto;
+}
+
+input,
+button {
+  font-family: 'Roboto Mono', monospace;
+  line-height: 1.4;
+  font-size: 0.8rem;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 2;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 2;
+  text-transform: lowercase;
+}
+
+a {
+  color: #4700e0;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #4700e0;
+  background-color: #4700e026;
+  border-radius: 4pt;
+}
+
+input {
+  width: 100%;
+  margin-top: 0.3rem;
+  height: 1.2rem;
+}
+
+button {
+  width: 100%;
+  height: 1.5rem;
+  text-align: left;
+}
+
+footer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: #6c757d !important;
+}
+
+li {
+  margin-bottom: 0.4rem;
+}
+
+.listing {
+  margin-bottom: 2.5em;
+}
+.listing-title {
+  font-weight: bold;
+}
+.listing-authors {
+  font-style: italic;
+}
+.listing-abstract {
+  margin-top: 0.5em;
+}
+.listings-number {
+  margin-top:1em;
+  margin-bottom:2em;
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  src: url(https://snkth.com/3rdparty/fonts/roboto/roboto-mono/RobotoMono-VariableFont_wght.ttf);
+  font-weight: 100 700;
+}
+@font-face {
+  font-family: "Roboto Mono";
+  src: url(https://snkth.com/3rdparty/fonts/roboto/roboto-mono/RobotoMono-Italic-VariableFont_wght.ttf);
+  font-style: italic;
+  font-weight: 100 700;
+}
