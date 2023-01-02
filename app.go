@@ -130,9 +130,28 @@ func weekHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// find the start of the week by seeking from Dec 29 of the previous year.
+	weekStart := time.Date(year-1, time.December, 29, 0, 0, 0, 0, time.UTC)
+	for {
+		y, w := weekStart.ISOWeek()
+		if y == year && w == week {
+			break
+		}
+		weekStart = weekStart.Add(24 * time.Hour)
+	}
+	weekEnd := weekStart.Add(7 * 24 * time.Hour)
+
+	hoursToWeekEnd := 0
+	if weekEnd.After(time.Now()) {
+		hoursToWeekEnd = int(time.Until(weekEnd).Hours())
+	}
+
 	data := map[string]any{
 		"year":                    year,
 		"week":                    week,
+		"weekStart":               weekStart.Format(time.RFC1123Z),
+		"weekEnd":                 weekEnd.Format(time.RFC1123Z),
+		"hoursToWeekEnd":          hoursToWeekEnd,
 		"number":                  len(weekFeed.feed.Items),
 		"listings":                weekFeed.feed.Items,
 		"LastUpdated":             eprintFeed.feed.Updated.UTC().Format(time.RFC1123Z),
