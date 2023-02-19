@@ -70,7 +70,7 @@ func updateFeed() {
 		weekFeed.mu.Lock()
 		included := false
 		for _, i := range weekFeed.feed.Items {
-			if i == item {
+			if i.Link.Href == item.Link.Href {
 				included = true
 			}
 		}
